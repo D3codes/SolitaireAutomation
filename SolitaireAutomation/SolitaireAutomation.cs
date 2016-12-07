@@ -13,6 +13,7 @@ namespace SolitaireAutomation
         public void Solitaire()
         {
             Solitaire s = new Solitaire();
+            s.getUserControls();
         }
     }
 }

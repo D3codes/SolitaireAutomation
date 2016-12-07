@@ -12,6 +12,34 @@ namespace SolitaireAutomation
         AutomationElement aeDesktop = null;
         AutomationElement aeSolitaire = null;
 
+        AutomationElementCollection aePanes = null;
+        AutomationElement aeFaceDownCardStackPane = null;
+        AutomationElement aeDealtStackPane = null;
+        AutomationElement aeSuitStacksPane = null;
+        AutomationElement aeRowStacksPane = null;
+        AutomationElement aeDeckPane = null;
+        AutomationElement aeStackPane1 = null;
+        AutomationElement aeStackPane2 = null;
+        AutomationElement aeStackPane3 = null;
+        AutomationElement aeStackPane4 = null;
+        AutomationElement aeStackPane5 = null;
+        AutomationElement aeStackPane6 = null;
+        AutomationElement aeStackPane7 = null;
+
+        AutomationElement aeCardDeckButton = null;
+        AutomationElement aeDealtSpaceButton = null;
+        AutomationElement aeSuitStackButton1 = null;
+        AutomationElement aeSuitStackButton2 = null;
+        AutomationElement aeSuitStackButton3 = null;
+        AutomationElement aeSuitStackButton4 = null;
+        AutomationElement aeStackButton1 = null;
+        AutomationElement aeStackButton2 = null;
+        AutomationElement aeStackButton3 = null;
+        AutomationElement aeStackButton4 = null;
+        AutomationElement aeStackButton5 = null;
+        AutomationElement aeStackButton6 = null;
+        AutomationElement aeStackButton7 = null;
+
         public Solitaire()
         {
             Console.WriteLine("Launching Solitaire application");
@@ -74,6 +102,25 @@ namespace SolitaireAutomation
             else
             {
                 Console.WriteLine("Found Solitaire main window");
+            }
+        }
+
+        public void getUserControls()
+        {
+            getPanes();
+        }
+
+        private void getPanes()
+        {
+            Console.WriteLine("Looking for panes");
+            aePanes = aeSolitaire.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
+            if (aePanes == null)
+            {
+                throw new Exception("No panes collection");
+            }
+            else
+            {
+                Console.WriteLine("Got panes collection");
             }
         }
     }
