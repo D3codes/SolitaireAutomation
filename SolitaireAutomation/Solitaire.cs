@@ -12,7 +12,7 @@ namespace SolitaireAutomation
         AutomationElement aeDesktop = null;
         AutomationElement aeSolitaire = null;
         AutomationElementCollection aeButtons = null;
-        AutomationElementCollection aePanes = null;
+        AutomationElement aeSuitStacksPane = null;
         Board board;
 
         public Solitaire()
@@ -87,15 +87,15 @@ namespace SolitaireAutomation
             Debug.WriteLine("Refreshing board. . .");
             do
             {
-                getButtons();
-                getPanes();
-                board.setBoard(aeButtons, aePanes);
+                findSuitStackPane();
+                findButtons();
+                board.setBoard(aeButtons, aeSuitStacksPane);
 
             } while (board.rowStacksTop[0] == null);
-            board.print();
+            //board.print();
         }
 
-        private void getButtons()
+        private void findButtons()
         {
             Debug.WriteLine("Looking for buttons");
             aeButtons = aeSolitaire.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
@@ -109,21 +109,22 @@ namespace SolitaireAutomation
             }
         }
 
-        private void getPanes()
+        private void findSuitStackPane()
         {
-            Debug.WriteLine("Looking for panes");
-            aePanes = aeSolitaire.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
-            if(aePanes == null)
+            Debug.WriteLine("Looking for suit stack pane");
+            aeSuitStacksPane = aeSolitaire.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Suit Stacks"));
+            if(aeSuitStacksPane == null)
             {
-                throw new Exception("No panes collection");
+                throw new Exception("No suit stack pane");
             } else
             {
-                Debug.WriteLine("Got panes collection");
+                Debug.WriteLine("Got suit stack pane");
             }
         }
 
         public void play()
         {
+            Debug.WriteLine("Playing Solitaire. . .");
             while(true)
             {
                 refreshBoard();
@@ -149,19 +150,22 @@ namespace SolitaireAutomation
 
         private void clickDeck()
         {
+            Debug.WriteLine("Clicking on deck. . .");
             InvokePattern ipClickCard = (InvokePattern)board.deck.GetCurrentPattern(InvokePattern.Pattern);
             ipClickCard.Invoke();
-            Thread.Sleep(1500);
+            Thread.Sleep(500);
         }
         
         private bool checkSuitSpaceForMove()
         {
+            Debug.WriteLine("Checking for possible moves in suit space. . .");
             for(int i = 0; i < 4; i++)
             {
                 for(int j = 0; j < 7; j++)
                 {
                     if(canSendHome(board.suitStacks[i], board.rowStacksBottom[j]))
                     {
+                        Debug.WriteLine("Move Found");
                         move(board.rowStacksBottom[j], board.suitStacks[i]);
                         return true;
                     }
@@ -172,36 +176,42 @@ namespace SolitaireAutomation
                     return true;
                 }
             }
+            Console.WriteLine("No moves found");
             return false;
         }
 
         private bool checkDealSpaceForMove()
         {
+            Debug.WriteLine("Checking for possible moves in deal space. . .");
             for(int i = 0; i < 7; i++)
             {
                 if(canMove(board.dealSpace, board.rowStacksBottom[i]))
                 {
+                    Debug.WriteLine("Move found");
                     move(board.dealSpace, board.rowStacksBottom[i]);
                     return true;
                 }
             }
+            Debug.WriteLine("No moves found");
             return false;
         }
 
         private bool checkRowStacksForMove()
         {
+            Debug.WriteLine("Checking for possible moves in row stacks. . .");
             for (int i = 6; i >= 0; i--)
             {
                 for (int j = 0; j < 7; j++)
                 {
                     if(canMove(board.rowStacksTop[i], board.rowStacksBottom[j]))
                     {
+                        Debug.WriteLine("Move found");
                         move(board.rowStacksTop[i], board.rowStacksBottom[j]);
                         return true;
                     }
                 }
             }
-
+            Debug.WriteLine("No moves found");
             return false;
         }
 
@@ -247,6 +257,7 @@ namespace SolitaireAutomation
 
         private void move(Card c1, Card c2)
         {
+            Debug.WriteLine("Moving card");
             c1.click();
             c2.click();
         }

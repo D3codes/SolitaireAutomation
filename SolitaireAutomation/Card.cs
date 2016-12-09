@@ -29,7 +29,7 @@ namespace SolitaireAutomation
         {
             InvokePattern ipClickCard = (InvokePattern)ae.GetCurrentPattern(InvokePattern.Pattern);
             ipClickCard.Invoke();
-            Thread.Sleep(1500);
+            Thread.Sleep(500);
         }
 
         public int getNumberInStack()

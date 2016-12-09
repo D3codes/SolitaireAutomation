@@ -77,7 +77,7 @@ namespace SolitaireAutomation
             Debug.WriteLine("");
         }
 
-        public void setBoard(AutomationElementCollection aeButtons, AutomationElementCollection aePanes)
+        public void setBoard(AutomationElementCollection aeButtons, AutomationElement aeSuitStacksPane)
         {
             dealSpaceCounter = 0;
             for (int i = 0; i < 7; i++)
@@ -161,7 +161,7 @@ namespace SolitaireAutomation
                 }
             }
 
-            checkSuitStacks(aePanes);
+            checkSuitStacks(aeSuitStacksPane);
             checkRowStacks();
         }
 
@@ -201,9 +201,9 @@ namespace SolitaireAutomation
             }
         }
 
-        private void checkSuitStacks(AutomationElementCollection aePanes)
+        private void checkSuitStacks(AutomationElement aeSuitStacksPane)
         {
-            foreach (AutomationElement pane in aePanes)
+            foreach (AutomationElement pane in aeSuitStacksPane.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane)))
             {
                 string[] paneNameArray = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().Split(' ');
                 string paneName = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString();
