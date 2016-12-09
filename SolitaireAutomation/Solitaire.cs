@@ -117,5 +117,14 @@ namespace SolitaireAutomation
                 Debug.WriteLine("Got panes collection");
             }
         }
+
+        public void play()
+        {
+            while(true)
+            {
+                refreshBoard();
+
+            }
+        }
     }
 }

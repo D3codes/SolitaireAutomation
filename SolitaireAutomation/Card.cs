@@ -12,6 +12,16 @@
             setSuit(cardArray[2]);
         }
 
+        public bool isBlack()
+        {
+            if(suit == Suit.CLUBS || suit == Suit.SPADES)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public string toString()
         {
             return(rank + " of " + suit);
