@@ -1,15 +1,33 @@
-﻿namespace SolitaireAutomation
+﻿using System.Threading;
+using System.Windows.Automation;
+
+namespace SolitaireAutomation
 {
     internal class Card
     {
         Rank rank;
         Suit suit;
+        AutomationElement ae;
 
-        public Card(string cardName)
+        public Card(string cardName, AutomationElement ae)
         {
             string[] cardArray = cardName.Split(' ');
             setRank(cardArray[0]);
             setSuit(cardArray[2]);
+
+            this.ae = ae;
+        }
+
+        public void click()
+        {
+            InvokePattern ipClickCard = (InvokePattern)ae.GetCurrentPattern(InvokePattern.Pattern);
+            ipClickCard.Invoke();
+            Thread.Sleep(1500);
+        }
+
+        public Rank getRank()
+        {
+            return rank;
         }
 
         public bool isBlack()

@@ -124,7 +124,87 @@ namespace SolitaireAutomation
             {
                 refreshBoard();
 
+                if(checkRowStacksForMove())
+                {
+                    continue;
+                }
+
+                if(checkDealSpaceForMove())
+                {
+                    continue;
+                }
             }
+        }
+        
+        private bool checkSuitSpaceForMove()
+        {
+            for(int i = 0; i < 4; i++)
+            {
+                for(int j = 0; j < 7; j++)
+                {
+                }
+            }
+        }
+
+        private bool checkDealSpaceForMove()
+        {
+            for(int i = 0; i < 7; i++)
+            {
+                if(canMove(board.dealSpace, board.rowStacksBottom[i]))
+                {
+                    move(board.dealSpace, board.rowStacksBottom[i]);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool checkRowStacksForMove()
+        {
+            for (int i = 6; i >= 0; i--)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    if(canMove(board.rowStacksTop[i], board.rowStacksBottom[j]))
+                    {
+                        move(board.rowStacksTop[i], board.rowStacksBottom[j]);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool canMove(Card c1, Card c2)
+        {
+            if(c1 == null)
+            {
+                return false;
+            }
+
+            if(c2 == null)
+            {
+                if(c1.getRank() == Rank.KING)
+                {
+                    return true;
+                } else
+                {
+                    return false;
+                }
+            }
+
+            if((c1.isBlack() != c2.isBlack()) && (c1.getRank() == c2.getRank()-1))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private void move(Card c1, Card c2)
+        {
+            c1.click();
+            c2.click();
         }
     }
 }
