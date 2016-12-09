@@ -6,6 +6,7 @@ namespace SolitaireAutomation
 {
     internal class Board
     {
+        public AutomationElement deck;
         public Card dealSpace;
         public Card[] suitStacks;
         public Card[] rowStacksBottom;
@@ -22,7 +23,7 @@ namespace SolitaireAutomation
         public void print()
         {
             Debug.Write("DealSpace: ");
-            if (dealSpace != null)
+            if (dealSpace.getRank() != Rank.JOKER)
             {
                 Debug.WriteLine(dealSpace.toString());
             }
@@ -34,7 +35,7 @@ namespace SolitaireAutomation
             Debug.Write("SuitStacks: ");
             for(int i = 0; i < 4; i++)
             {
-                if(suitStacks[i] != null)
+                if(suitStacks[i].getRank() != Rank.JOKER)
                 {
                     Debug.Write(suitStacks[i].toString());
                 }
@@ -48,7 +49,7 @@ namespace SolitaireAutomation
             Debug.Write("\nRowStacksTop: ");
             for(int i = 0; i < 7; i++)
             {
-                if(rowStacksTop[i] != null)
+                if(rowStacksTop[i].getRank() != Rank.JOKER)
                 {
                     Debug.Write(rowStacksTop[i].toString());
                 }
@@ -62,7 +63,7 @@ namespace SolitaireAutomation
             Debug.Write("\nRowStacksBottom: ");
             for(int i = 0; i < 7; i++)
             {
-                if(rowStacksBottom[i] != null)
+                if(rowStacksBottom[i].getRank() != Rank.JOKER)
                 {
                     Debug.Write(rowStacksBottom[i].toString());
                 }
@@ -72,6 +73,7 @@ namespace SolitaireAutomation
                 }
                 Debug.Write(", ");
             }
+            Debug.WriteLine("");
         }
 
         public void setBoard(AutomationElementCollection aeButtons, AutomationElementCollection aePanes)
@@ -92,12 +94,59 @@ namespace SolitaireAutomation
                 string[] elementName = ae.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().Split(' ');
                 switch(elementName[0])
                 {
+                    case "Deck,":
+                        deck = ae;
+                        break;
+
+                    case "Card":
+                        deck = ae;
+                        break;
+
                     case "DealSpace":
-                        dealSpace = null;
+                        dealSpace = Card.emptySpace(ae);
                         break;
 
                     case "Deal":
                         setDealSpace(elementName, ae);
+                        break;
+
+                    case "Suit":
+                        setEmptySuitStack(elementName, ae);
+                        break;
+
+                    case "Stack1,":
+                        rowStacksTop[0] = Card.emptySpace(ae);
+                        rowStacksBottom[0] = Card.emptySpace(ae);
+                        break;
+
+                    case "Stack2,":
+                        rowStacksTop[1] = Card.emptySpace(ae);
+                        rowStacksBottom[1] = Card.emptySpace(ae);
+                        break;
+
+                    case "Stack3,":
+                        rowStacksTop[2] = Card.emptySpace(ae);
+                        rowStacksBottom[2] = Card.emptySpace(ae);
+                        break;
+
+                    case "Stack4,":
+                        rowStacksTop[3] = Card.emptySpace(ae);
+                        rowStacksBottom[3] = Card.emptySpace(ae);
+                        break;
+
+                    case "Stack5,":
+                        rowStacksTop[4] = Card.emptySpace(ae);
+                        rowStacksBottom[4] = Card.emptySpace(ae);
+                        break;
+
+                    case "Stack6,":
+                        rowStacksTop[5] = Card.emptySpace(ae);
+                        rowStacksBottom[5] = Card.emptySpace(ae);
+                        break;
+
+                    case "Stack7,":
+                        rowStacksTop[6] = Card.emptySpace(ae);
+                        rowStacksBottom[6] = Card.emptySpace(ae);
                         break;
 
                     case "Stack":
@@ -107,6 +156,28 @@ namespace SolitaireAutomation
 
                 checkSuitStacks(aePanes);
                 checkRowStacks();
+            }
+        }
+
+        private void setEmptySuitStack(string[] elementName, AutomationElement ae)
+        {
+            switch(elementName[2])
+            {
+                case "1":
+                    suitStacks[0] = Card.emptySpace(ae);
+                    break;
+
+                case "2":
+                    suitStacks[1] = Card.emptySpace(ae);
+                    break;
+
+                case "3":
+                    suitStacks[2] = Card.emptySpace(ae);
+                    break;
+
+                case "4":
+                    suitStacks[3] = Card.emptySpace(ae);
+                    break;
             }
         }
 

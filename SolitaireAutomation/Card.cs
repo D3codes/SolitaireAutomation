@@ -18,6 +18,11 @@ namespace SolitaireAutomation
             this.ae = ae;
         }
 
+        public static Card emptySpace(AutomationElement ae)
+        {
+            return new Card("Joker of Hearts", ae);
+        }
+
         public void click()
         {
             InvokePattern ipClickCard = (InvokePattern)ae.GetCurrentPattern(InvokePattern.Pattern);
@@ -28,6 +33,11 @@ namespace SolitaireAutomation
         public Rank getRank()
         {
             return rank;
+        }
+
+        public Suit getSuit()
+        {
+            return suit;
         }
 
         public bool isBlack()

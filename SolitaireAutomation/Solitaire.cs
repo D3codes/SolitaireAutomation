@@ -133,7 +133,21 @@ namespace SolitaireAutomation
                 {
                     continue;
                 }
+
+                if(checkSuitSpaceForMove())
+                {
+                    continue;
+                }
+
+                clickDeck();
             }
+        }
+
+        private void clickDeck()
+        {
+            InvokePattern ipClickCard = (InvokePattern)board.deck.GetCurrentPattern(InvokePattern.Pattern);
+            ipClickCard.Invoke();
+            Thread.Sleep(1500);
         }
         
         private bool checkSuitSpaceForMove()
@@ -142,8 +156,19 @@ namespace SolitaireAutomation
             {
                 for(int j = 0; j < 7; j++)
                 {
+                    if(canSendHome(board.suitStacks[i], board.rowStacksBottom[j]))
+                    {
+                        move(board.rowStacksBottom[j], board.suitStacks[i]);
+                        return true;
+                    }
+                }
+                if(canSendHome(board.suitStacks[i], board.dealSpace))
+                {
+                    move(board.dealSpace, board.suitStacks[i]);
+                    return true;
                 }
             }
+            return false;
         }
 
         private bool checkDealSpaceForMove()
@@ -176,14 +201,29 @@ namespace SolitaireAutomation
             return false;
         }
 
+        private bool canSendHome(Card c1, Card c2)
+        {
+            if(c2.getRank() == Rank.ACE && c1.getRank() == Rank.JOKER)
+            {
+                return true;
+            }
+
+            if(c1.getSuit() == c2.getSuit() && c1.getRank() == c2.getRank() - 1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private bool canMove(Card c1, Card c2)
         {
-            if(c1 == null)
+            if(c1.getRank() == Rank.JOKER)
             {
                 return false;
             }
 
-            if(c2 == null)
+            if(c2.getRank() == Rank.JOKER)
             {
                 if(c1.getRank() == Rank.KING)
                 {
