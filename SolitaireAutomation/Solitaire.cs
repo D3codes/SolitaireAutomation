@@ -11,43 +11,20 @@ namespace SolitaireAutomation
         Process solitaire = null;
         AutomationElement aeDesktop = null;
         AutomationElement aeSolitaire = null;
-
+        AutomationElementCollection aeButtons = null;
         AutomationElementCollection aePanes = null;
-        AutomationElement aeFaceDownCardStackPane = null;
-        AutomationElement aeDealtStackPane = null;
-        AutomationElement aeSuitStacksPane = null;
-        AutomationElement aeRowStacksPane = null;
-        AutomationElement aeDeckPane = null;
-        AutomationElement aeStackPane1 = null;
-        AutomationElement aeStackPane2 = null;
-        AutomationElement aeStackPane3 = null;
-        AutomationElement aeStackPane4 = null;
-        AutomationElement aeStackPane5 = null;
-        AutomationElement aeStackPane6 = null;
-        AutomationElement aeStackPane7 = null;
-
-        AutomationElement aeCardDeckButton = null;
-        AutomationElement aeDealtSpaceButton = null;
-        AutomationElement aeSuitStackButton1 = null;
-        AutomationElement aeSuitStackButton2 = null;
-        AutomationElement aeSuitStackButton3 = null;
-        AutomationElement aeSuitStackButton4 = null;
-        AutomationElement aeStackButton1 = null;
-        AutomationElement aeStackButton2 = null;
-        AutomationElement aeStackButton3 = null;
-        AutomationElement aeStackButton4 = null;
-        AutomationElement aeStackButton5 = null;
-        AutomationElement aeStackButton6 = null;
-        AutomationElement aeStackButton7 = null;
+        Board board;
 
         public Solitaire()
         {
-            Console.WriteLine("Launching Solitaire application");
+            Debug.WriteLine("Launching Solitaire application");
             solitaire = Process.Start("C:\\Program Files\\Microsoft Games\\Solitaire\\Solitaire.exe");
 
             findProcess();
             findDesktop();
             findMainWindow();
+
+            board = new Board();
         }
 
         private void findProcess()
@@ -55,7 +32,7 @@ namespace SolitaireAutomation
             int ct = 0;
             do
             {
-                Console.WriteLine("Looking for Solitaire process. . .");
+                Debug.WriteLine("Looking for Solitaire process. . .");
                 ++ct;
                 Thread.Sleep(100);
             } while (solitaire == null && ct < 50);
@@ -66,13 +43,13 @@ namespace SolitaireAutomation
             }
             else
             {
-                Console.WriteLine("Found Solitaire process");
+                Debug.WriteLine("Found Solitaire process");
             }
         }
 
         private void findDesktop()
         {
-            Console.WriteLine("\nGetting Desktop");
+            Debug.WriteLine("\nGetting Desktop");
             aeDesktop = AutomationElement.RootElement;
             if (aeDesktop == null)
             {
@@ -80,7 +57,7 @@ namespace SolitaireAutomation
             }
             else
             {
-                Console.WriteLine("Found Desktop\n");
+                Debug.WriteLine("Found Desktop\n");
             }
         }
 
@@ -89,7 +66,7 @@ namespace SolitaireAutomation
             int numWaits = 0;
             do
             {
-                Console.WriteLine("Looking for Solitaire mian window. . .");
+                Debug.WriteLine("Looking for Solitaire main window. . .");
                 aeSolitaire = aeDesktop.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Solitaire"));
                 ++numWaits;
                 Thread.Sleep(200);
@@ -101,26 +78,43 @@ namespace SolitaireAutomation
             }
             else
             {
-                Console.WriteLine("Found Solitaire main window");
+                Debug.WriteLine("Found Solitaire main window");
             }
         }
 
-        public void getUserControls()
+        public void refreshBoard()
         {
+            Debug.WriteLine("Refreshing board. . .");
+            getButtons();
             getPanes();
+            board.setBoard(aeButtons, aePanes);
+            board.print();
+        }
+
+        private void getButtons()
+        {
+            Debug.WriteLine("Looking for buttons");
+            aeButtons = aeSolitaire.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
+            if (aeButtons == null)
+            {
+                throw new Exception("No buttons collection");
+            }
+            else
+            {
+                Debug.WriteLine("Got buttons collection");
+            }
         }
 
         private void getPanes()
         {
-            Console.WriteLine("Looking for panes");
-            aePanes = aeSolitaire.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
-            if (aePanes == null)
+            Debug.WriteLine("Looking for panes");
+            aePanes = aeSolitaire.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
+            if(aePanes == null)
             {
                 throw new Exception("No panes collection");
-            }
-            else
+            } else
             {
-                Console.WriteLine("Got panes collection");
+                Debug.WriteLine("Got panes collection");
             }
         }
     }

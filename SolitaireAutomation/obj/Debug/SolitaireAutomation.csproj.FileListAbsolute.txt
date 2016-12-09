@@ -4,3 +4,9 @@ C:\Users\David\Documents\Visual Studio 2015\Projects\SolitaireAutomation\Solitai
 C:\Users\David\Documents\Visual Studio 2015\Projects\SolitaireAutomation\SolitaireAutomation\obj\Debug\SolitaireAutomation.csprojResolveAssemblyReference.cache
 C:\Users\David\Documents\Visual Studio 2015\Projects\SolitaireAutomation\SolitaireAutomation\obj\Debug\SolitaireAutomation.dll
 C:\Users\David\Documents\Visual Studio 2015\Projects\SolitaireAutomation\SolitaireAutomation\obj\Debug\SolitaireAutomation.pdb
+C:\Users\David\Documents\Dev\SolitaireAutomation\SolitaireAutomation\bin\Debug\SolitaireAutomation.dll
+C:\Users\David\Documents\Dev\SolitaireAutomation\SolitaireAutomation\bin\Debug\SolitaireAutomation.pdb
+C:\Users\David\Documents\Dev\SolitaireAutomation\SolitaireAutomation\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\Users\David\Documents\Dev\SolitaireAutomation\SolitaireAutomation\obj\Debug\SolitaireAutomation.csprojResolveAssemblyReference.cache
+C:\Users\David\Documents\Dev\SolitaireAutomation\SolitaireAutomation\obj\Debug\SolitaireAutomation.dll
+C:\Users\David\Documents\Dev\SolitaireAutomation\SolitaireAutomation\obj\Debug\SolitaireAutomation.pdb
