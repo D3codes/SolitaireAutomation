@@ -85,9 +85,13 @@ namespace SolitaireAutomation
         public void refreshBoard()
         {
             Debug.WriteLine("Refreshing board. . .");
-            getButtons();
-            getPanes();
-            board.setBoard(aeButtons, aePanes);
+            do
+            {
+                getButtons();
+                getPanes();
+                board.setBoard(aeButtons, aePanes);
+
+            } while (board.rowStacksTop[0] == null);
             board.print();
         }
 
@@ -225,7 +229,7 @@ namespace SolitaireAutomation
 
             if(c2.getRank() == Rank.JOKER)
             {
-                if(c1.getRank() == Rank.KING)
+                if(c1.getRank() == Rank.KING && c1.getNumberInStack() != 1)
                 {
                     return true;
                 } else

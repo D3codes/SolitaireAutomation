@@ -8,19 +8,21 @@ namespace SolitaireAutomation
         Rank rank;
         Suit suit;
         AutomationElement ae;
+        int numberInStack;
 
-        public Card(string cardName, AutomationElement ae)
+        public Card(string cardName, AutomationElement ae, int num)
         {
             string[] cardArray = cardName.Split(' ');
             setRank(cardArray[0]);
             setSuit(cardArray[2]);
 
             this.ae = ae;
+            numberInStack = num;
         }
 
         public static Card emptySpace(AutomationElement ae)
         {
-            return new Card("Joker of Hearts", ae);
+            return new Card("Joker of Hearts", ae, 0);
         }
 
         public void click()
@@ -28,6 +30,11 @@ namespace SolitaireAutomation
             InvokePattern ipClickCard = (InvokePattern)ae.GetCurrentPattern(InvokePattern.Pattern);
             ipClickCard.Invoke();
             Thread.Sleep(1500);
+        }
+
+        public int getNumberInStack()
+        {
+            return numberInStack;
         }
 
         public Rank getRank()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Automation;
 
 namespace SolitaireAutomation
@@ -95,9 +96,6 @@ namespace SolitaireAutomation
                 switch(elementName[0])
                 {
                     case "Deck,":
-                        deck = ae;
-                        break;
-
                     case "Card":
                         deck = ae;
                         break;
@@ -152,11 +150,33 @@ namespace SolitaireAutomation
                     case "Stack":
                         setRowStack(elementName, ae);
                         break;
-                }
 
-                checkSuitStacks(aePanes);
-                checkRowStacks();
+                    case "End":
+                        endGame(ae);
+                        return;
+
+                    case "Play":
+                        playAgain(ae);
+                        return;
+                }
             }
+
+            checkSuitStacks(aePanes);
+            checkRowStacks();
+        }
+
+        private void playAgain(AutomationElement playAgainButton)
+        {
+            InvokePattern ipClickCard = (InvokePattern)playAgainButton.GetCurrentPattern(InvokePattern.Pattern);
+            ipClickCard.Invoke();
+            Thread.Sleep(1500);
+        }
+
+        private void endGame(AutomationElement endGameButton)
+        {
+            InvokePattern ipClickCard = (InvokePattern)endGameButton.GetCurrentPattern(InvokePattern.Pattern);
+            ipClickCard.Invoke();
+            Thread.Sleep(1500);
         }
 
         private void setEmptySuitStack(string[] elementName, AutomationElement ae)
@@ -185,22 +205,23 @@ namespace SolitaireAutomation
         {
             foreach (AutomationElement pane in aePanes)
             {
-                string[] paneName = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().Split(' ');
-                if (pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().StartsWith("Suit Stack 1"))
+                string[] paneNameArray = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().Split(' ');
+                string paneName = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString();
+                if (paneName.StartsWith("Suit Stack 1"))
                 {    
-                    suitStacks[0] = new Card(paneName[3] + " " + paneName[4] + " " + paneName[5], pane);
+                    suitStacks[0] = new Card(paneNameArray[3] + " " + paneNameArray[4] + " " + paneNameArray[5], pane, int.Parse(paneNameArray[2]));
 
-                } else if(pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().StartsWith("Suit Stack 2"))
+                } else if(paneName.StartsWith("Suit Stack 2"))
                 {
-                    suitStacks[1] = new Card(paneName[3] + " " + paneName[4] + " " + paneName[5], pane);
+                    suitStacks[1] = new Card(paneNameArray[3] + " " + paneNameArray[4] + " " + paneNameArray[5], pane, int.Parse(paneNameArray[2]));
 
-                } else if(pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().StartsWith("Suit Stack 3"))
+                } else if(paneName.StartsWith("Suit Stack 3"))
                 {
-                    suitStacks[2] = new Card(paneName[3] + " " + paneName[4] + " " + paneName[5], pane);
+                    suitStacks[2] = new Card(paneNameArray[3] + " " + paneNameArray[4] + " " + paneNameArray[5], pane, int.Parse(paneNameArray[2]));
 
-                } else if(pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().StartsWith("Suit Stack 4"))
+                } else if(paneName.StartsWith("Suit Stack 4"))
                 {
-                    suitStacks[3] = new Card(paneName[3] + " " + paneName[4] + " " + paneName[5], pane);
+                    suitStacks[3] = new Card(paneNameArray[3] + " " + paneNameArray[4] + " " + paneNameArray[5], pane, int.Parse(paneNameArray[2]));
                 }
             }
         }
@@ -210,7 +231,7 @@ namespace SolitaireAutomation
             if(int.Parse(elementName[3]) > dealSpaceCounter)
             {
                 dealSpaceCounter = int.Parse(elementName[3]);
-                dealSpace = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                dealSpace = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
             }
         }
 
@@ -221,77 +242,77 @@ namespace SolitaireAutomation
                 case "1":
                     if (rowStacksTop[0] == null)
                     {
-                        rowStacksTop[0] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksTop[0] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     else
                     {
-                        rowStacksBottom[0] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksBottom[0] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     break;
 
                 case "2":
                     if (rowStacksTop[1] == null)
                     {
-                        rowStacksTop[1] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksTop[1] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     else
                     {
-                        rowStacksBottom[1] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksBottom[1] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     break;
 
                 case "3":
                     if (rowStacksTop[2] == null)
                     {
-                        rowStacksTop[2] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksTop[2] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     else
                     {
-                        rowStacksBottom[2] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksBottom[2] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     break;
 
                 case "4":
                     if (rowStacksTop[3] == null)
                     {
-                        rowStacksTop[3] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksTop[3] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     else
                     {
-                        rowStacksBottom[3] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksBottom[3] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     break;
 
                 case "5":
                     if (rowStacksTop[4] == null)
                     {
-                        rowStacksTop[4] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksTop[4] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     else
                     {
-                        rowStacksBottom[4] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksBottom[4] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     break;
 
                 case "6":
                     if (rowStacksTop[5] == null)
                     {
-                        rowStacksTop[5] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksTop[5] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     else
                     {
-                        rowStacksBottom[5] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksBottom[5] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     break;
 
                 default:
                     if (rowStacksTop[6] == null)
                     {
-                        rowStacksTop[6] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksTop[6] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     else
                     {
-                        rowStacksBottom[6] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae);
+                        rowStacksBottom[6] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
                     }
                     break;
             }
