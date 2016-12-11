@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Automation;
@@ -80,7 +81,7 @@ namespace SolitaireAutomation
             Debug.WriteLine("");
         }
 
-        public void setBoard(AutomationElementCollection aeButtons, AutomationElement aeSuitStacksPane)
+        public void setBoard(List<AutomationElement> aeButtons, AutomationElement aeSuitStacksPane)
         {
             dealSpaceCounter = 0;
             for (int i = 0; i < rowStacksTop.Length; i++)
@@ -109,10 +110,6 @@ namespace SolitaireAutomation
 
                     case "Deal":
                         setDealSpace(elementName, ae);
-                        break;
-
-                    case "Suit":
-                        setEmptySuitStack(int.Parse(elementName[2]), ae);
                         break;
 
                     case "Stack1,":
@@ -209,8 +206,8 @@ namespace SolitaireAutomation
             AutomationElementCollection aeSuitPanes = aeSuitStacksPane.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
             foreach (AutomationElement pane in aeSuitPanes)
             {
-                string[] paneNameArray = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().Split(' ');
                 string paneName = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString();
+                string[] paneNameArray = paneName.Split(' ');
                 if (paneName.StartsWith("Suit Stack 1"))
                 {    
                     suitStacks[0] = new Card(paneNameArray[3] + " " + paneNameArray[4] + " " + paneNameArray[5], pane, int.Parse(paneNameArray[2]));
@@ -227,6 +224,13 @@ namespace SolitaireAutomation
                 {
                     suitStacks[3] = new Card(paneNameArray[3] + " " + paneNameArray[4] + " " + paneNameArray[5], pane, int.Parse(paneNameArray[2]));
                 }
+            }
+
+            AutomationElementCollection aeSuitButtons = aeSuitStacksPane.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
+            foreach(AutomationElement button in aeSuitButtons)
+            {
+                string[] buttonNameArray = button.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().Split(' ');
+                setEmptySuitStack(int.Parse(buttonNameArray[2]), button);
             }
         }
 
