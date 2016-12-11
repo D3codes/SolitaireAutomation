@@ -22,6 +22,17 @@ namespace SolitaireAutomation
         AutomationElement aeSuitStacksPane = null;
         Board board;
 
+        PropertyCondition pcSolitaire = new PropertyCondition(AutomationElement.NameProperty, "Solitaire");
+        PropertyCondition pcButton = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button);
+        PropertyCondition pcFaceDownCardStack = new PropertyCondition(AutomationElement.NameProperty, "Face Down Card Stack");
+        PropertyCondition pcDealtStack = new PropertyCondition(AutomationElement.NameProperty, "Dealt Stack");
+        PropertyCondition pcRowStacks = new PropertyCondition(AutomationElement.NameProperty, "Row Stacks");
+        PropertyCondition pcNoMoreMoves = new PropertyCondition(AutomationElement.NameProperty, "No More Moves");
+        PropertyCondition pcEndGame = new PropertyCondition(AutomationElement.NameProperty, "End Game");
+        PropertyCondition pcGameLost = new PropertyCondition(AutomationElement.NameProperty, "Game Lost");
+        PropertyCondition pcPlayAgain = new PropertyCondition(AutomationElement.NameProperty, "Play again");
+        PropertyCondition pcSuitStacks = new PropertyCondition(AutomationElement.NameProperty, "Suit Stacks");
+
         public Solitaire()
         {
             Debug.WriteLine("Launching Solitaire application");
@@ -37,6 +48,7 @@ namespace SolitaireAutomation
             setDeckButton();
             setDealSpaceButtons();
             setRowStacksButtons();
+            setSuitStackPane();
         }
 
         private void findProcess()
@@ -79,7 +91,7 @@ namespace SolitaireAutomation
             do
             {
                 Debug.WriteLine("Looking for Solitaire main window. . .");
-                aeSolitaire = aeDesktop.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Solitaire"));
+                aeSolitaire = aeDesktop.FindFirst(TreeScope.Children, pcSolitaire);
                 ++numWaits;
                 Thread.Sleep(200);
             } while (aeSolitaire == null && numWaits < 50);
@@ -99,7 +111,6 @@ namespace SolitaireAutomation
             Debug.WriteLine("Refreshing board. . .");
             do
             {
-                setSuitStackPane();
                 setButtons();
                 board.setBoard(aeButtons, aeSuitStacksPane);
 
@@ -110,38 +121,38 @@ namespace SolitaireAutomation
         private void setDeckButton()
         {
             Debug.WriteLine("Setting Deck Button. . .");
-            AutomationElement aeDeckPane = aeSolitaire.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Face Down Card Stack"));
-            aeDeckButton = aeDeckPane.FindFirst(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
+            AutomationElement aeDeckPane = aeSolitaire.FindFirst(TreeScope.Children, pcFaceDownCardStack);
+            aeDeckButton = aeDeckPane.FindFirst(TreeScope.Descendants, pcButton);
         }
 
         private void setDealSpaceButtons()
         {
             Debug.WriteLine("Setting Deal Space Buttons. . .");
-            AutomationElement aeDealSpacePane = aeSolitaire.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Dealt Stack"));
-            aeDealSpaceButtons = aeDealSpacePane.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
+            AutomationElement aeDealSpacePane = aeSolitaire.FindFirst(TreeScope.Children, pcDealtStack);
+            aeDealSpaceButtons = aeDealSpacePane.FindAll(TreeScope.Descendants, pcButton);
         }
 
         private void setRowStacksButtons()
         {
             Debug.WriteLine("Setting Row Stacks Buttons. . .");
-            AutomationElement aeRowStacksPane = aeSolitaire.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Row Stacks"));
-            aeRowStacksButtons = aeRowStacksPane.FindAll(TreeScope.Descendants, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
+            AutomationElement aeRowStacksPane = aeSolitaire.FindFirst(TreeScope.Children, pcRowStacks);
+            aeRowStacksButtons = aeRowStacksPane.FindAll(TreeScope.Descendants, pcButton);
         }
 
         private void setButtons()
         {
             aeButtons.Clear();
 
-            AutomationElement noMoreMoves = aeSolitaire.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "No More Moves"));
+            AutomationElement noMoreMoves = aeSolitaire.FindFirst(TreeScope.Children, pcNoMoreMoves);
             if (noMoreMoves != null)
             {
-                AutomationElement endGame = noMoreMoves.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "End Game"));
+                AutomationElement endGame = noMoreMoves.FindFirst(TreeScope.Children, pcEndGame);
                 aeButtons.Add(endGame);
             }
-            AutomationElement gameLost = aeSolitaire.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Game Lost"));
+            AutomationElement gameLost = aeSolitaire.FindFirst(TreeScope.Children, pcGameLost);
             if (gameLost != null)
             {
-                AutomationElement playAgain = gameLost.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Play again"));
+                AutomationElement playAgain = gameLost.FindFirst(TreeScope.Children, pcPlayAgain);
                 aeButtons.Add(playAgain);
             }
 
@@ -158,15 +169,8 @@ namespace SolitaireAutomation
 
         private void setSuitStackPane()
         {
-            Debug.WriteLine("Looking for suit stack pane");
-            aeSuitStacksPane = aeSolitaire.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.NameProperty, "Suit Stacks"));
-            if(aeSuitStacksPane == null)
-            {
-                throw new Exception("No suit stack pane");
-            } else
-            {
-                Debug.WriteLine("Got suit stack pane");
-            }
+            Debug.WriteLine("Setting suit stack pane. . .");
+            aeSuitStacksPane = aeSolitaire.FindFirst(TreeScope.Children, pcSuitStacks);
         }
 
         public void play()

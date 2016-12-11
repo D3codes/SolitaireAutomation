@@ -18,6 +18,9 @@ namespace SolitaireAutomation
         public Card[] rowStacksTop;
         int dealSpaceCounter;
 
+        PropertyCondition pcPane = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane);
+        PropertyCondition pcButton = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button);
+
         public Board()
         {
             suitStacks = new Card[NUMBER_OF_SUIT_STACKS];
@@ -203,7 +206,7 @@ namespace SolitaireAutomation
 
         private void checkSuitStacks(AutomationElement aeSuitStacksPane)
         {
-            AutomationElementCollection aeSuitPanes = aeSuitStacksPane.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
+            AutomationElementCollection aeSuitPanes = aeSuitStacksPane.FindAll(TreeScope.Children, pcPane);
             foreach (AutomationElement pane in aeSuitPanes)
             {
                 string paneName = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString();
@@ -226,7 +229,7 @@ namespace SolitaireAutomation
                 }
             }
 
-            AutomationElementCollection aeSuitButtons = aeSuitStacksPane.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
+            AutomationElementCollection aeSuitButtons = aeSuitStacksPane.FindAll(TreeScope.Children, pcButton);
             foreach(AutomationElement button in aeSuitButtons)
             {
                 string[] buttonNameArray = button.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().Split(' ');
