@@ -8,6 +8,9 @@ namespace SolitaireAutomation
 {
     internal class Solitaire
     {
+        static int NUMBER_OF_SUIT_STACKS = 4;
+        static int NUMBER_OF_ROW_STACKS = 7;
+
         Process solitaire = null;
         AutomationElement aeDesktop = null;
         AutomationElement aeSolitaire = null;
@@ -29,13 +32,13 @@ namespace SolitaireAutomation
 
         private void findProcess()
         {
-            int ct = 0;
+            int count = 0;
             do
             {
                 Debug.WriteLine("Looking for Solitaire process. . .");
-                ++ct;
+                ++count;
                 Thread.Sleep(100);
-            } while (solitaire == null && ct < 50);
+            } while (solitaire == null && count < 50);
 
             if (solitaire == null)
             {
@@ -159,9 +162,9 @@ namespace SolitaireAutomation
         private bool checkSuitSpaceForMove()
         {
             Debug.WriteLine("Checking for possible moves in suit space. . .");
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < NUMBER_OF_SUIT_STACKS; i++)
             {
-                for(int j = 0; j < 7; j++)
+                for(int j = 0; j < NUMBER_OF_ROW_STACKS; j++)
                 {
                     if(canSendHome(board.suitStacks[i], board.rowStacksBottom[j]))
                     {
@@ -183,7 +186,7 @@ namespace SolitaireAutomation
         private bool checkDealSpaceForMove()
         {
             Debug.WriteLine("Checking for possible moves in deal space. . .");
-            for(int i = 0; i < 7; i++)
+            for(int i = 0; i < NUMBER_OF_ROW_STACKS; i++)
             {
                 if(canMove(board.dealSpace, board.rowStacksBottom[i]))
                 {
@@ -199,14 +202,14 @@ namespace SolitaireAutomation
         private bool checkRowStacksForMove()
         {
             Debug.WriteLine("Checking for possible moves in row stacks. . .");
-            for (int i = 6; i >= 0; i--)
+            for (int i = NUMBER_OF_ROW_STACKS; i > 0; i--)
             {
-                for (int j = 0; j < 7; j++)
+                for (int j = 0; j < NUMBER_OF_ROW_STACKS; j++)
                 {
-                    if(canMove(board.rowStacksTop[i], board.rowStacksBottom[j]))
+                    if(canMove(board.rowStacksTop[i-1], board.rowStacksBottom[j]))
                     {
                         Debug.WriteLine("Move found");
-                        move(board.rowStacksTop[i], board.rowStacksBottom[j]);
+                        move(board.rowStacksTop[i-1], board.rowStacksBottom[j]);
                         return true;
                     }
                 }
@@ -217,7 +220,7 @@ namespace SolitaireAutomation
 
         private bool canSendHome(Card c1, Card c2)
         {
-            if(c2.getRank() == Rank.ACE && c1.getRank() == Rank.JOKER)
+            if(c2.getRank() == Rank.ACE && c1.getRank() == Rank.EMPTY)
             {
                 return true;
             }
@@ -232,12 +235,12 @@ namespace SolitaireAutomation
 
         private bool canMove(Card c1, Card c2)
         {
-            if(c1.getRank() == Rank.JOKER)
+            if(c1.getRank() == Rank.EMPTY)
             {
                 return false;
             }
 
-            if(c2.getRank() == Rank.JOKER)
+            if(c2.getRank() == Rank.EMPTY)
             {
                 if(c1.getRank() == Rank.KING && c1.getNumberInStack() != 1)
                 {

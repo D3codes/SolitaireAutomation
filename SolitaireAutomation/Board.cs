@@ -7,6 +7,9 @@ namespace SolitaireAutomation
 {
     internal class Board
     {
+        static int NUMBER_OF_SUIT_STACKS = 4;
+        static int NUMBER_OF_ROW_STACKS = 7;
+
         public AutomationElement deck;
         public Card dealSpace;
         public Card[] suitStacks;
@@ -16,15 +19,15 @@ namespace SolitaireAutomation
 
         public Board()
         {
-            suitStacks = new Card[4];
-            rowStacksBottom = new Card[7];
-            rowStacksTop = new Card[7];
+            suitStacks = new Card[NUMBER_OF_SUIT_STACKS];
+            rowStacksBottom = new Card[NUMBER_OF_ROW_STACKS];
+            rowStacksTop = new Card[NUMBER_OF_ROW_STACKS];
         }
 
         public void print()
         {
             Debug.Write("DealSpace: ");
-            if (dealSpace.getRank() != Rank.JOKER)
+            if (dealSpace.getRank() != Rank.EMPTY)
             {
                 Debug.WriteLine(dealSpace.toString());
             }
@@ -34,9 +37,9 @@ namespace SolitaireAutomation
             }
 
             Debug.Write("SuitStacks: ");
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < suitStacks.Length; i++)
             {
-                if(suitStacks[i].getRank() != Rank.JOKER)
+                if(suitStacks[i].getRank() != Rank.EMPTY)
                 {
                     Debug.Write(suitStacks[i].toString());
                 }
@@ -48,9 +51,9 @@ namespace SolitaireAutomation
             }
 
             Debug.Write("\nRowStacksTop: ");
-            for(int i = 0; i < 7; i++)
+            for(int i = 0; i < rowStacksTop.Length; i++)
             {
-                if(rowStacksTop[i].getRank() != Rank.JOKER)
+                if(rowStacksTop[i].getRank() != Rank.EMPTY)
                 {
                     Debug.Write(rowStacksTop[i].toString());
                 }
@@ -62,9 +65,9 @@ namespace SolitaireAutomation
             }
 
             Debug.Write("\nRowStacksBottom: ");
-            for(int i = 0; i < 7; i++)
+            for(int i = 0; i < rowStacksBottom.Length; i++)
             {
-                if(rowStacksBottom[i].getRank() != Rank.JOKER)
+                if(rowStacksBottom[i].getRank() != Rank.EMPTY)
                 {
                     Debug.Write(rowStacksBottom[i].toString());
                 }
@@ -80,12 +83,12 @@ namespace SolitaireAutomation
         public void setBoard(AutomationElementCollection aeButtons, AutomationElement aeSuitStacksPane)
         {
             dealSpaceCounter = 0;
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < rowStacksTop.Length; i++)
             {
                 rowStacksTop[i] = null;
                 rowStacksBottom[i] = null;
             }
-            for(int i = 0; i < 4; i++)
+            for(int i = 0; i < suitStacks.Length; i++)
             {
                 suitStacks[i] = null;
             }
@@ -109,7 +112,7 @@ namespace SolitaireAutomation
                         break;
 
                     case "Suit":
-                        setEmptySuitStack(elementName, ae);
+                        setEmptySuitStack(int.Parse(elementName[2]), ae);
                         break;
 
                     case "Stack1,":
@@ -179,23 +182,23 @@ namespace SolitaireAutomation
             Thread.Sleep(1500);
         }
 
-        private void setEmptySuitStack(string[] elementName, AutomationElement ae)
+        private void setEmptySuitStack(int suitStackNumber, AutomationElement ae)
         {
-            switch(elementName[2])
+            switch(suitStackNumber)
             {
-                case "1":
+                case 1:
                     suitStacks[0] = Card.emptySpace(ae);
                     break;
 
-                case "2":
+                case 2:
                     suitStacks[1] = Card.emptySpace(ae);
                     break;
 
-                case "3":
+                case 3:
                     suitStacks[2] = Card.emptySpace(ae);
                     break;
 
-                case "4":
+                case 4:
                     suitStacks[3] = Card.emptySpace(ae);
                     break;
             }
@@ -203,7 +206,8 @@ namespace SolitaireAutomation
 
         private void checkSuitStacks(AutomationElement aeSuitStacksPane)
         {
-            foreach (AutomationElement pane in aeSuitStacksPane.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane)))
+            AutomationElementCollection aeSuitPanes = aeSuitStacksPane.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Pane));
+            foreach (AutomationElement pane in aeSuitPanes)
             {
                 string[] paneNameArray = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString().Split(' ');
                 string paneName = pane.GetCurrentPropertyValue(AutomationElement.NameProperty).ToString();
@@ -237,9 +241,10 @@ namespace SolitaireAutomation
 
         private void setRowStack(string[] elementName, AutomationElement ae)
         {
-            switch (elementName[1])
+            int rowStackNumber = int.Parse(elementName[1]);
+            switch (rowStackNumber)
             {
-                case "1":
+                case 1:
                     if (rowStacksTop[0] == null)
                     {
                         rowStacksTop[0] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
@@ -250,7 +255,7 @@ namespace SolitaireAutomation
                     }
                     break;
 
-                case "2":
+                case 2:
                     if (rowStacksTop[1] == null)
                     {
                         rowStacksTop[1] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
@@ -261,7 +266,7 @@ namespace SolitaireAutomation
                     }
                     break;
 
-                case "3":
+                case 3:
                     if (rowStacksTop[2] == null)
                     {
                         rowStacksTop[2] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
@@ -272,7 +277,7 @@ namespace SolitaireAutomation
                     }
                     break;
 
-                case "4":
+                case 4:
                     if (rowStacksTop[3] == null)
                     {
                         rowStacksTop[3] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
@@ -283,7 +288,7 @@ namespace SolitaireAutomation
                     }
                     break;
 
-                case "5":
+                case 5:
                     if (rowStacksTop[4] == null)
                     {
                         rowStacksTop[4] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
@@ -294,7 +299,7 @@ namespace SolitaireAutomation
                     }
                     break;
 
-                case "6":
+                case 6:
                     if (rowStacksTop[5] == null)
                     {
                         rowStacksTop[5] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
@@ -305,7 +310,7 @@ namespace SolitaireAutomation
                     }
                     break;
 
-                default:
+                case 7:
                     if (rowStacksTop[6] == null)
                     {
                         rowStacksTop[6] = new Card(elementName[4] + " " + elementName[5] + " " + elementName[6], ae, int.Parse(elementName[3]));
@@ -320,7 +325,7 @@ namespace SolitaireAutomation
 
         private void checkRowStacks()
         {
-            for(int i = 0; i < 7; i++)
+            for(int i = 0; i < rowStacksBottom.Length; i++)
             {
                 if(rowStacksBottom[i] == null)
                 {
